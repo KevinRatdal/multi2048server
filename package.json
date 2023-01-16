@@ -1,0 +1,16 @@
+{
+  "name": "multi2048server",
+  "version": "1.0.0",
+  "description": "Multi 2048 server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "startDev": "nodemon index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "nodemon": "^2.0.20",
+    "socket.io": "^4.5.4"
+  }
+}
