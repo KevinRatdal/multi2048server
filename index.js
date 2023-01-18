@@ -1,9 +1,10 @@
 const { Server } = require('socket.io')
 
-const io = new Server(3000, {
+const io = new Server(3693, {
     cors: {
         origin: [
-            'http://localhost:5173'
+            'http://localhost:5173',
+            'https://multi2048client.vercel.app'
         ]
     }
 });
