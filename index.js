@@ -3,10 +3,10 @@ const app = express()
 const server = require('http').Server(app)
 const path = require('path')
 const { Server } = require('socket.io')
+const cors = require('cors')
+const { db } = require('./db.js')
 
-const db = require('./db.js')
-
-var highscores = db.getCollection("highscores")
+app.use(cors())
 
 const io = new Server(server, {
   cors: {
@@ -21,16 +21,16 @@ app.get('/', (req, res) => {
 })
 
 app.get('/highscore', (req, res) => {
-  let data = highscores.chain().simplesort('score').data()
-  console.log(data)
-  res.send(data)
+  let highscores = db.getCollection('highscores')
+  let data = highscores.chain().simplesort('score', true).data()
+  res.json({data: data})
 })
 
 app.post('/highscore', (req, res) => {
-  console.log(req.body)
   const data = req.body
+  console.log(data)
   if (data.username && data.score) {
-
+    let highscores = db.getCollection('highscores')
     const parsedHighscore = {username: data.username, score: data.score} 
     highscores.insert(parsedHighscore)
     res.send({status: "success", message: "Score submitted"})
