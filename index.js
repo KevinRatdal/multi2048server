@@ -26,6 +26,11 @@ app.get('/highscore', (req, res) => {
   res.json({data: data})
 })
 
+app.get('/image', (req, res) => {
+	console.log(req.headers, req.route)
+	res.sendFile(path.join(__dirname, 'image.png'))
+})
+
 app.post('/highscore', (req, res) => {
   const data = req.body
   console.log(data)
@@ -65,6 +70,19 @@ io.on('connection', (socket) => {
       return
     }
     socket.to(room).emit('receiveGameStateUpdate', {...gameStateObject, sockId: socket.id, pName: playerMap[socket.id]})
+
+  })
+
+  socket.on('finishGame', (gameStateObject, room) => {
+    console.log({ gameStateObject, room })
+    if (room === undefined || room === '') {
+      return
+    }
+
+    let highscores = db.getCollection('highscores')
+    const parsedHighscore = { username: playerMap[socket.id], score: gameStateObject.gScore }
+    highscores.insert(parsedHighscore)
+    socket.to(room).emit('playerFinished', { ...gameStateObject, sockId: socket.id, pName: playerMap[socket.id], finished: true })
 
   })
 
